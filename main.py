@@ -3,22 +3,21 @@ from gpiozero import Button, LED, PWMLED
 from picamera import PiCamera
 from time import sleep
 from lobe import ImageModel
+import cv2
+
+#usb camera
+cam = cv2.videocapture(0) #number 0 represents main camera when using multiple camera change number to 1,2,3...etc
+ret , img =cam.read()
+cv2.imwrite("path/to/imagefolder/image_name.extension_name",img)
+
+#to show the image
+if ret:
+    cv2.imshow("output folder name",img)
+    cv2.waitKey(0) #delay
+cam.release()
 
 # Load Lobe TF model
 # --> Change model file path as needed
 model = ImageModel.load('/home/pi/Lobe/model')
-
-n=1
-while True:
-    if n==1:
-        #take_photo()
-        # Run photo through Lobe TF model
-        result = model.predict_from_file('/home/pi/Pictures/image.jpg')
-        # --> Change image path
-        print(result.prediction)
-        n=n+1
-    else:
-        break
-        # Pulse status light
-        #white_led.pulse(2,1)
-    sleep(1)
+result = model.predict_from_file('path/to/file.jpg')
+pritnt(result.predection)
